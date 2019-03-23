@@ -4,6 +4,7 @@ import ShareModal from 'js/components/modals/Share';
 import Spinner from 'js/components/shared/Spinner';
 import Controls from 'js/components/Controls';
 import MapView from 'esri/views/MapView';
+import FeatureLayer from 'esri/layers/FeatureLayer';
 import React, { Component } from 'react';
 import EsriMap from 'esri/Map';
 
@@ -27,7 +28,14 @@ export default class Map extends Component {
     const promise = new MapView({
       container: this.refs.mapView,
       map: map,
-      ...VIEW_OPTIONS
+      extent: { // autocasts as new Extent()
+        xmin: -9177811,
+        ymin: 4247000,
+        xmax: -9176791,
+        ymax: 4247784,
+        spatialReference: 102100
+      },
+      // ...VIEW_OPTIONS
     });
 
     promise.when(view => {
@@ -38,6 +46,22 @@ export default class Map extends Component {
     });
     // Now that we have created our Map and Mapview, here is where we would add some layers!
     // see https://developers.arcgis.com/javascript/latest/sample-code/sandbox/index.html?sample=layers-featurelayer for an example!
+    var popupTrailheads = {
+      'title': 'Treehead',
+      'content': '<b>Tree Name:</b> {Sci_Name}<br> <b>Height:</b> {Height}<br><b>Tree:</b> {Tree_ID}<br><b>Status:</b> {Status}<br><b>Condition:</b> {Condition}<br>'
+    };
+    var featureLayer = new FeatureLayer({
+      url: 'https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Landscape_Trees/FeatureServer/0',
+      // definitionExpression: "Sci_Name = 'Ulmus pumila'",
+      outFields: ['Sci_Name', 'Height', 'Tree_ID', 'Status', 'Condition'],
+      featureReduction: {
+        type: 'cluster'
+      },
+      popupTemplate: popupTrailheads
+    });
+
+
+    map.add(featureLayer);
   }
 
   toggleLocateModal = () => {
