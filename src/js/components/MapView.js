@@ -46,6 +46,7 @@ export default class Map extends Component {
     });
     // Now that we have created our Map and Mapview, here is where we would add some layers!
     // see https://developers.arcgis.com/javascript/latest/sample-code/sandbox/index.html?sample=layers-featurelayer for an example!
+    var treeSelect = document.getElementById('tree');
     var popupTrailheads = {
       'title': 'Treehead',
       'content': '<b>Tree Name:</b> {Sci_Name}<br> <b>Height:</b> {Height}<br><b>Tree:</b> {Tree_ID}<br><b>Status:</b> {Status}<br><b>Condition:</b> {Condition}<br>'
@@ -62,6 +63,62 @@ export default class Map extends Component {
 
 
     map.add(featureLayer);
+    // set definition expression to user selected value
+    function setTreeDefinitionExpression(newValue) {
+      featureLayer.definitionExpression = "Sci_Name = '" + newValue + "'";
+    }
+    // Get all the tree names to filter
+    function getValues(response) {
+      var features = response.features;
+      var values = features.map(function (feature) {
+        return feature.attributes.Sci_Name;
+      });
+
+      return values;
+
+    }
+    // Remove duplicate values
+    function getUniqueValues(values) {
+      var uniqueValues = [];
+
+      values.forEach(function (item, i) {
+        if ((uniqueValues.length < 1 || uniqueValues.indexOf(item) === -1) &&
+          (item !== '')) {
+          uniqueValues.push(item);
+        }
+      });
+      return uniqueValues;
+    }
+    // Add the values (tree names) to select filter
+    function addToSelect(values) {
+      values.sort();
+      values.forEach(function (value) {
+        var option = document.createElement('option');
+        if (value !== '') {
+          option.text = value;
+          console.log(option.text);
+          treeSelect.add(option);
+        }
+      });
+      return setTreeDefinitionExpression(treeSelect.value);
+    }
+
+    // Query the featureLayer Array (ArcGIS API)
+    promise.when(function () {
+      return featureLayer.when(function () {
+        var query = featureLayer.createQuery();
+        return featureLayer.queryFeatures(query);
+      });
+    })
+    .then(getValues)
+    .then(getUniqueValues)
+    .then(addToSelect);
+
+    // Get user selected input
+    treeSelect.addEventListener('change', function () {
+      var type = event.target.value;
+      setTreeDefinitionExpression(type);
+    });
   }
 
   toggleLocateModal = () => {

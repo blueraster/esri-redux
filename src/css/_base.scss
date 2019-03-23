@@ -33,3 +33,9 @@ ol, ul {
 .shadow {
   box-shadow: 2px 2px 2px $shadow-background;
 }
+select#tree {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  z-index: 5;
+}
