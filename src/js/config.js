@@ -7,17 +7,24 @@ export const INITIAL_STATE = {
 
 export const TEXT = {
   title: 'Esri Example',
-  subtitle: 'Example with React, Esri, Sass, and more.'
+  subtitle: 'Carbon Storage of trees in Warren Wilson College'
 };
 
 export const MAP_OPTIONS = {
-  basemap: 'streets-vector'
+  basemap: 'streets'
 };
 
 export const VIEW_OPTIONS = {
   ui: { components: ['logo', 'attribution'] },
   center: [-35.55, 26.53],
-  zoom: 2
+  zoom: 2,
+  extent: {
+    xmin: -9177811,
+    ymin: 4247000,
+    xmax: -9176791,
+    ymax: 4247784,
+    spatialReference: 102100
+  },
 };
 
 export const URLS = {

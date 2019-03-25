@@ -14,7 +14,7 @@ export default class Header extends Component {
           <h2 className='app-subtitle'>{subtitle}</h2>
           <img className="app-logo" src={logoImg} alt="app-logo" />
         </div>
-        <div>
+        <div className='filter'>
           <select id="tree"></select>
         </div>
       </div>

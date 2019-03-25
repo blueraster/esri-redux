@@ -14,6 +14,7 @@ export default class LocateModal extends Component {
     return (
       <Wrapper theme='locate-modal' visible={visible} close={this.close}>
         <h3>Locate Something</h3>
+        <input type='text'/>
       </Wrapper>
     );
   }
