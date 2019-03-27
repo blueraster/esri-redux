@@ -9,6 +9,9 @@ export const TEXT = {
   title: 'Esri Example',
   subtitle: 'Carbon Storage of trees in Warren Wilson College'
 };
+export const FILTER_TEXT = {
+  filterTitle: 'Filter By Condition',
+};
 
 export const MAP_OPTIONS = {
   basemap: 'streets'

@@ -5,7 +5,7 @@ export default class Header extends Component {
   displayName: 'Header';
 
   render () {
-    const {title, subtitle} = this.props;
+    const {title, subtitle, filterTitle} = this.props;
 
     return (
       <div>
@@ -15,6 +15,7 @@ export default class Header extends Component {
           <img className="app-logo" src={logoImg} alt="app-logo" />
         </div>
         <div className='filter'>
+          <h3 className="filter-title">{filterTitle}</h3>
           <select id="tree"></select>
         </div>
       </div>
