@@ -74,8 +74,8 @@ export default class Map extends Component {
       var uniqueValues = [];
 
       values.forEach(function (item, i) {
-        if ((uniqueValues.length < 1 || uniqueValues.indexOf(item) === -1) &&
-          (item !== '')) {
+        if ((uniqueValues.indexOf(item) === -1) &&
+          (item.trim() !== '')) {
           uniqueValues.push(item);
         }
       });
