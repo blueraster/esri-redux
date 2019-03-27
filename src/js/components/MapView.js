@@ -57,7 +57,7 @@ export default class Map extends Component {
     map.add(featureLayer);
     // set definition expression to user selected value
     function setTreeDefinitionExpression(newValue) {
-      featureLayer.definitionExpression = "Condition = '" + newValue + "'";
+      featureLayer.definitionExpression = newValue === 'Show All' ? null : "Condition = '" + newValue + "'";
     }
     // Get all the tree conditions to filter
     function getValues(response) {
@@ -72,6 +72,8 @@ export default class Map extends Component {
     // Remove duplicate values
     function getUniqueValues(values) {
       var uniqueValues = [];
+
+      uniqueValues.push('Show All');
 
       values.forEach(function (item, i) {
         if ((uniqueValues.indexOf(item) === -1) &&

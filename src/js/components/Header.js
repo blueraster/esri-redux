@@ -16,7 +16,8 @@ export default class Header extends Component {
         </div>
         <div className='filter'>
           <h3 className="filter-title">{filterTitle}</h3>
-          <select id="tree"></select>
+          <select id="tree">
+          </select>
         </div>
       </div>
     );
