@@ -1,4 +1,4 @@
-import { MAP_OPTIONS, VIEW_OPTIONS, LAYER_OPTIONS } from 'js/config';
+import { MAP_OPTIONS, VIEW_OPTIONS } from 'js/config';
 import LocateModal from 'js/components/modals/Locate';
 import ShareModal from 'js/components/modals/Share';
 import SliderModal from 'js/components/modals/Slider';
@@ -6,7 +6,6 @@ import Spinner from 'js/components/shared/Spinner';
 import Controls from 'js/components/Controls';
 import MapView from 'esri/views/MapView';
 import FeatureLayer from 'esri/layers/FeatureLayer';
-import Legend from 'esri/widgets/Legend';
 import React, { Component } from 'react';
 import EsriMap from 'esri/Map';
 
@@ -30,7 +29,7 @@ export default class Map extends Component {
 
     console.log("Did mount")
     this.createMap();
-    
+
     // Now that we have created our Map and Mapview, here is where we would add some layers!
     // see https://developers.arcgis.com/javascript/latest/sample-code/sandbox/index.html?sample=layers-featurelayer for an example!
   }
@@ -56,7 +55,7 @@ export default class Map extends Component {
       layerId: 2,
       popupTemplate: {
         title: "{NAME} in {County}, {State}",
-        content: "{*}"
+        content: "Median Earnings Full-Time Employed Civilian: ${B24022_001E}"
       }
     })
 
