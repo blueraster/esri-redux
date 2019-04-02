@@ -14,16 +14,15 @@ export default class SliderModal extends Component {
 
     return (
       <div className="range-container">
-                Set Income Level Cutoff: {this.props.incomeLevel}
+        <b>Median Income Level > {this.props.incomeLevel}</b>
         <input 
           type="range"
           className="custom-range"
           defaultValue={this.props.incomeLevel}
           min={0}
-          max={100000}
+          max={300000}
           step={10000}
           onChange={this.props.onChangeValue}/>
-
       </div>
     );
   }

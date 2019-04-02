@@ -23,8 +23,6 @@ export default class Map extends Component {
       view: {}
     };
     this.handleOnChange = this.handleOnChange.bind(this);
-    //this.toggleLocateModal = this.toggleLocateModal.bind(this);
-    //this.toggleShareModal = this.toggleShareModal.bind(this);
     this.createMap = this.createMap.bind(this);
   }
 
@@ -32,50 +30,7 @@ export default class Map extends Component {
 
     console.log("Did mount")
     this.createMap();
-    /*
     
-    //https://livingatlas.arcgis.com/en/
-    const layer0 = new FeatureLayer({
-      url: "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/ACS_Median_Earnings_by_Occupation_by_Sex_Boundaries/FeatureServer/",
-      layerId: 0,
-      popupTemplate: {
-        title: "{NAME}",
-        content: "{*}",
-      }
-    });
-
-    const layer1 = new FeatureLayer({
-      url: "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/ACS_Median_Earnings_by_Occupation_by_Sex_Boundaries/FeatureServer/",
-      layerId: 1,
-      popupTemplate: {
-        title: "{NAME} in {State}",
-        content: "{*}"
-      }
-      
-    });
-
-    const layer2 = new FeatureLayer({
-      url: "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/ACS_Median_Earnings_by_Occupation_by_Sex_Boundaries/FeatureServer/",
-      layerId: 2,
-      popupTemplate: {
-        title: "{NAME} in {County}, {State}",
-        content: "{*}"
-      }
-
-    });
-
-    */
-
-    /*
-    layer0.definitionExpression = `B24022_001E > ${this.state.incomeLevel}`;
-    layer1.definitionExpression = "B24022_001E > 0" 
-    layer2.definitionExpression = "B24022_001E > 0" 
-
-    map.layers = [layer0, layer1, layer2];
-    */
-
-
-
     // Now that we have created our Map and Mapview, here is where we would add some layers!
     // see https://developers.arcgis.com/javascript/latest/sample-code/sandbox/index.html?sample=layers-featurelayer for an example!
   }
@@ -99,14 +54,13 @@ export default class Map extends Component {
     const layer = new FeatureLayer({
       url: "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/ACS_Median_Earnings_by_Occupation_by_Sex_Boundaries/FeatureServer/",
       layerId: 2,
-      maxScale: 0,
       popupTemplate: {
         title: "{NAME} in {County}, {State}",
         content: "{*}"
       }
     })
 
-    layer.definitionExpression = `B24022_001E >= ${this.state.incomeLevel}`;
+    layer.definitionExpression = `B24022_001E > ${this.state.incomeLevel}`;
     map.add(layer)
   }
 
@@ -124,7 +78,7 @@ export default class Map extends Component {
       incomeLevel: event.target.value
     }, () =>{
       this.createMap();
-    })
+    });
   }
 
   render () {

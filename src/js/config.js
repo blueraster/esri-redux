@@ -6,7 +6,7 @@ export const INITIAL_STATE = {
 };
 
 export const TEXT = {
-  title: 'Esri Example',
+  title: 'Median Earnings',
   subtitle: 'Example with React, Esri, Sass, and more.'
 };
 
