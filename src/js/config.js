@@ -16,8 +16,8 @@ export const MAP_OPTIONS = {
 
 export const VIEW_OPTIONS = {
   ui: { components: ['logo', 'attribution'] },
-  center: [-35.55, 26.53],
-  zoom: 2
+  center: [-87.73, 41.95],
+  zoom: 8
 };
 
 export const URLS = {

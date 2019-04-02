@@ -1,9 +1,12 @@
-import { MAP_OPTIONS, VIEW_OPTIONS } from 'js/config';
+import { MAP_OPTIONS, VIEW_OPTIONS, LAYER_OPTIONS } from 'js/config';
 import LocateModal from 'js/components/modals/Locate';
 import ShareModal from 'js/components/modals/Share';
+import SliderModal from 'js/components/modals/Slider';
 import Spinner from 'js/components/shared/Spinner';
 import Controls from 'js/components/Controls';
 import MapView from 'esri/views/MapView';
+import FeatureLayer from 'esri/layers/FeatureLayer';
+import Legend from 'esri/widgets/Legend';
 import React, { Component } from 'react';
 import EsriMap from 'esri/Map';
 
@@ -16,13 +19,70 @@ export default class Map extends Component {
       counter: 0,
       shareModalVisible: false,
       locateModalVisible: false,
+      incomeLevel: 0,
       view: {}
     };
+    this.handleOnChange = this.handleOnChange.bind(this);
+    //this.toggleLocateModal = this.toggleLocateModal.bind(this);
+    //this.toggleShareModal = this.toggleShareModal.bind(this);
+    this.createMap = this.createMap.bind(this);
   }
 
   componentDidMount() {
-    const map = new EsriMap(MAP_OPTIONS);
 
+    console.log("Did mount")
+    this.createMap();
+    /*
+    
+    //https://livingatlas.arcgis.com/en/
+    const layer0 = new FeatureLayer({
+      url: "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/ACS_Median_Earnings_by_Occupation_by_Sex_Boundaries/FeatureServer/",
+      layerId: 0,
+      popupTemplate: {
+        title: "{NAME}",
+        content: "{*}",
+      }
+    });
+
+    const layer1 = new FeatureLayer({
+      url: "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/ACS_Median_Earnings_by_Occupation_by_Sex_Boundaries/FeatureServer/",
+      layerId: 1,
+      popupTemplate: {
+        title: "{NAME} in {State}",
+        content: "{*}"
+      }
+      
+    });
+
+    const layer2 = new FeatureLayer({
+      url: "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/ACS_Median_Earnings_by_Occupation_by_Sex_Boundaries/FeatureServer/",
+      layerId: 2,
+      popupTemplate: {
+        title: "{NAME} in {County}, {State}",
+        content: "{*}"
+      }
+
+    });
+
+    */
+
+    /*
+    layer0.definitionExpression = `B24022_001E > ${this.state.incomeLevel}`;
+    layer1.definitionExpression = "B24022_001E > 0" 
+    layer2.definitionExpression = "B24022_001E > 0" 
+
+    map.layers = [layer0, layer1, layer2];
+    */
+
+
+
+    // Now that we have created our Map and Mapview, here is where we would add some layers!
+    // see https://developers.arcgis.com/javascript/latest/sample-code/sandbox/index.html?sample=layers-featurelayer for an example!
+  }
+
+
+  createMap() {
+    const map = new EsriMap(MAP_OPTIONS);
     // Create our map view
     const promise = new MapView({
       container: this.refs.mapView,
@@ -34,10 +94,20 @@ export default class Map extends Component {
       this.setState({
         view: view
       });
-
     });
-    // Now that we have created our Map and Mapview, here is where we would add some layers!
-    // see https://developers.arcgis.com/javascript/latest/sample-code/sandbox/index.html?sample=layers-featurelayer for an example!
+
+    const layer = new FeatureLayer({
+      url: "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/ACS_Median_Earnings_by_Occupation_by_Sex_Boundaries/FeatureServer/",
+      layerId: 2,
+      maxScale: 0,
+      popupTemplate: {
+        title: "{NAME} in {County}, {State}",
+        content: "{*}"
+      }
+    })
+
+    layer.definitionExpression = `B24022_001E >= ${this.state.incomeLevel}`;
+    map.add(layer)
   }
 
   toggleLocateModal = () => {
@@ -48,15 +118,26 @@ export default class Map extends Component {
     this.setState({shareModalVisible: !this.state.shareModalVisible});
   }
 
-  render () {
-    const {shareModalVisible, locateModalVisible, view} = this.state;
+  handleOnChange = (event) => {
+    console.log("Changing")
+    this.setState({
+      incomeLevel: event.target.value
+    }, () =>{
+      this.createMap();
+    })
+  }
 
+  render () {
+
+    const {shareModalVisible, locateModalVisible, view, incomeLevel} = this.state;
+    
     return (
       <div ref='mapView' className='map-view'>
-        <ShareModal visible={shareModalVisible} toggleShareModal={this.toggleShareModal} />
+        <ShareModal visible={shareModalVisible} toggleShareModal={this.toggleShareModal}/>
         <LocateModal visible={locateModalVisible} toggleLocateModal={this.toggleLocateModal} />
         <Controls view={view} toggleShareModal={this.toggleShareModal} toggleLocateModal={this.toggleLocateModal} />
         <Spinner active={!view.ready} />
+        <SliderModal id="incomeFilter" incomeLevel={this.state.incomeLevel} onChangeValue={this.handleOnChange} />
       </div>
     );
   }
