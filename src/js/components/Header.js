@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import logoImg from 'images/logo.svg';
 
 export default class Header extends Component {
-  displayName: 'Header';
 
   render () {
     const {title, subtitle} = this.props;

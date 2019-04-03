@@ -1,4 +1,7 @@
-import { MAP_OPTIONS, VIEW_OPTIONS } from 'js/config';
+import {
+  MAP_OPTIONS,
+  VIEW_OPTIONS
+} from 'js/config';
 import LocateModal from 'js/components/modals/Locate';
 import ShareModal from 'js/components/modals/Share';
 import SliderModal from 'js/components/modals/Slider';
@@ -6,11 +9,12 @@ import Spinner from 'js/components/shared/Spinner';
 import Controls from 'js/components/Controls';
 import MapView from 'esri/views/MapView';
 import FeatureLayer from 'esri/layers/FeatureLayer';
-import React, { Component } from 'react';
+import React, {
+  Component
+} from 'react';
 import EsriMap from 'esri/Map';
 
 export default class Map extends Component {
-  displayName: 'Map';
 
   constructor(props) {
     super(props);
@@ -19,9 +23,15 @@ export default class Map extends Component {
       shareModalVisible: false,
       locateModalVisible: false,
       incomeLevel: 0,
-      view: {}
+      county: {
+        value: "Cook",
+        label: "Cook"
+      },
+      view: {},
+      layer: {}
     };
-    this.handleOnChange = this.handleOnChange.bind(this);
+    this.handleCountyChange = this.handleCountyChange.bind(this);
+    this.handleIncomeChange = this.handleIncomeChange.bind(this);
     this.createMap = this.createMap.bind(this);
   }
 
@@ -59,39 +69,102 @@ export default class Map extends Component {
       }
     })
 
-    layer.definitionExpression = `B24022_001E > ${this.state.incomeLevel}`;
+    this.setState({
+      layer: layer
+    })
+
+    layer.definitionExpression = `B24022_001E > ${this.state.incomeLevel} AND County='${this.state.county.value} County'`;
     map.add(layer)
   }
 
+  updateLayer() {
+    this.state.layer.definitionExpression = `B24022_001E > ${this.state.incomeLevel} AND County='${this.state.county.value} County'`;
+  }
+
   toggleLocateModal = () => {
-    this.setState({locateModalVisible: !this.state.locateModalVisible});
-  }
-
-  toggleShareModal = () => {
-    this.setState({shareModalVisible: !this.state.shareModalVisible});
-  }
-
-  handleOnChange = (event) => {
-    console.log("Changing")
     this.setState({
-      incomeLevel: event.target.value
-    }, () =>{
-      this.createMap();
+      locateModalVisible: !this.state.locateModalVisible
     });
   }
 
-  render () {
+  toggleShareModal = () => {
+    this.setState({
+      shareModalVisible: !this.state.shareModalVisible
+    });
+  }
 
-    const {shareModalVisible, locateModalVisible, view, incomeLevel} = this.state;
-    
-    return (
-      <div ref='mapView' className='map-view'>
-        <ShareModal visible={shareModalVisible} toggleShareModal={this.toggleShareModal}/>
-        <LocateModal visible={locateModalVisible} toggleLocateModal={this.toggleLocateModal} />
-        <Controls view={view} toggleShareModal={this.toggleShareModal} toggleLocateModal={this.toggleLocateModal} />
-        <Spinner active={!view.ready} />
-        <SliderModal id="incomeFilter" incomeLevel={this.state.incomeLevel} onChangeValue={this.handleOnChange} />
-      </div>
+  handleIncomeChange = (event) => {
+    console.log("Changing")
+    this.setState({
+      incomeLevel: event.target.value,
+    }, () => {
+      this.updateLayer();
+    });
+  }
+
+  handleCountyChange = (event) => {
+    console.log(event);
+    this.setState({
+      county: event,
+    }, () => {
+      this.updateLayer();
+    });
+  }
+
+  render() {
+
+    const {
+      shareModalVisible,
+      locateModalVisible,
+      view,
+      incomeLevel
+    } = this.state;
+
+    return ( <
+      div ref = 'mapView'
+      className = 'map-view' >
+      <
+      ShareModal visible = {
+        shareModalVisible
+      }
+      toggleShareModal = {
+        this.toggleShareModal
+      }
+      /> <
+      LocateModal visible = {
+        locateModalVisible
+      }
+      toggleLocateModal = {
+        this.toggleLocateModal
+      }
+      /> <
+      Controls view = {
+        view
+      }
+      toggleShareModal = {
+        this.toggleShareModal
+      }
+      toggleLocateModal = {
+        this.toggleLocateModal
+      }
+      /> <
+      Spinner active = {!view.ready
+      }
+      /> <
+      SliderModal id = "incomeFilter"
+      incomeLevel = {
+        this.state.incomeLevel
+      }
+      onChangeSlider = {
+        this.handleIncomeChange
+      }
+
+      county = {this.state.county}
+      onChangeCounty = {
+        this.handleCountyChange
+      }
+      /> < /
+      div >
     );
   }
 }
