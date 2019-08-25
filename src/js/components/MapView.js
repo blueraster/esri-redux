@@ -1,11 +1,15 @@
-import { MAP_OPTIONS, VIEW_OPTIONS } from 'js/config';
+import { MAP_OPTIONS, VIEW_OPTIONS, TEXT } from 'js/config';
 import LocateModal from 'js/components/modals/Locate';
 import ShareModal from 'js/components/modals/Share';
 import Spinner from 'js/components/shared/Spinner';
 import Controls from 'js/components/Controls';
 import MapView from 'esri/views/MapView';
+import Sidebar from './Sidebar';
+import FeatureLayer from 'esri/layers/FeatureLayer';
 import React, { Component } from 'react';
 import EsriMap from 'esri/Map';
+import { bikeTrailVirginiaRenderer, bikeTrailArlingtonRenderer, breweriesVirginiaRenderer} from './featureLayer/renderer'
+import { popupBreweriesVirginia, popupBikeTrailVirginia, popupBikeTrailArlington } from './featureLayer/popup'
 
 export default class Map extends Component {
   displayName: 'Map';
@@ -16,8 +20,18 @@ export default class Map extends Component {
       counter: 0,
       shareModalVisible: false,
       locateModalVisible: false,
-      view: {}
-    };
+      view: {},
+      currentDefinitionExpression: null
+    }
+
+
+    // this.bikeTrailArlington = new FeatureLayer({
+    //   url: "https://gis2.arlingtonva.us/arlgis/rest/services/Open_Data/od_Bike_Route_Lines/FeatureServer/0/query?where=1%3D1&outFields=Route_Type,Label&outSR=4326&f=json",
+    //   renderer: bikeTrailArlingtonRenderer,
+    //   outFields: ["Route_Type"],
+    //   popupTemplate: popupBikeTrailArlington,
+    //   definitionExpression: this.state.currentDefinitionExpression
+    // })
   }
 
   componentDidMount() {
@@ -38,6 +52,43 @@ export default class Map extends Component {
     });
     // Now that we have created our Map and Mapview, here is where we would add some layers!
     // see https://developers.arcgis.com/javascript/latest/sample-code/sandbox/index.html?sample=layers-featurelayer for an example!
+
+    const bikeTrailVirginia = new FeatureLayer({
+      url: "https://services.arcgis.com/p5v98VHDX9Atv3l7/arcgis/rest/services/Bicycle_Facility_Inventory_(view)/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json",
+      renderer: bikeTrailVirginiaRenderer,
+      outFields: ["Facility_Name"],
+      popupTemplate: popupBikeTrailVirginia
+    })
+
+    const breweriesVirginia = new FeatureLayer({
+      url: "https://maps.vedp.org/arcgis/rest/services/OpenData/OpenDataLayers/MapServer/1/query?where=1%3D1&outFields=*&outSR=4326&f=json",
+      renderer: breweriesVirginiaRenderer,
+      outFields:["Trade_Name", "Address", "Trade_Phon"],
+      popupTemplate: popupBreweriesVirginia
+    })
+
+    this.bikeTrailArlington = new FeatureLayer({
+      url: "https://gis2.arlingtonva.us/arlgis/rest/services/Open_Data/od_Bike_Route_Lines/FeatureServer/0/query?where=1%3D1&outFields=Route_Type,Label&outSR=4326&f=json",
+      renderer: bikeTrailArlingtonRenderer,
+      outFields: ["Route_Type"],
+      popupTemplate: popupBikeTrailArlington,
+      definitionExpression: this.state.currentDefinitionExpression
+    })
+
+    map.add(this.bikeTrailArlington)
+    map.add(bikeTrailVirginia)
+    map.add(breweriesVirginia)
+
+  }
+
+  toggleDefinitionExpression = (currentDefinitionExpression) => {
+    this.setState({
+      currentDefinitionExpression
+    }, () => {
+      this.bikeTrailArlington.definitionExpression = currentDefinitionExpression
+    })
+          // this.bikeTrailArlington.definitionExpression = currentDefinitionExpression
+
   }
 
   toggleLocateModal = () => {
@@ -52,11 +103,14 @@ export default class Map extends Component {
     const {shareModalVisible, locateModalVisible, view} = this.state;
 
     return (
-      <div ref='mapView' className='map-view'>
-        <ShareModal visible={shareModalVisible} toggleShareModal={this.toggleShareModal} />
-        <LocateModal visible={locateModalVisible} toggleLocateModal={this.toggleLocateModal} />
-        <Controls view={view} toggleShareModal={this.toggleShareModal} toggleLocateModal={this.toggleLocateModal} />
-        <Spinner active={!view.ready} />
+      <div className='root'>
+        <Sidebar currentDefinitionExpression={this.state.currentDefinitionExpression} title={TEXT.title} subtitle={TEXT.subtitle} location={TEXT.location} toggleDefinitionExpression={this.toggleDefinitionExpression}/>
+        <div ref='mapView' className='map-view'>
+          <ShareModal visible={shareModalVisible} toggleShareModal={this.toggleShareModal} />
+          <LocateModal visible={locateModalVisible} toggleLocateModal={this.toggleLocateModal} />
+          <Controls view={view} toggleShareModal={this.toggleShareModal} toggleLocateModal={this.toggleLocateModal} />
+          <Spinner active={!view.ready} />
+        </div>
       </div>
     );
   }

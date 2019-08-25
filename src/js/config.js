@@ -6,18 +6,19 @@ export const INITIAL_STATE = {
 };
 
 export const TEXT = {
-  title: 'Esri Example',
-  subtitle: 'Example with React, Esri, Sass, and more.'
+  title: 'Washington and Old Dominion Trail',
+  subtitle: 'Bike and Brew',
+  location: 'Arlington'
 };
 
 export const MAP_OPTIONS = {
-  basemap: 'streets-vector'
+  basemap: 'dark-gray-vector'
 };
 
 export const VIEW_OPTIONS = {
   ui: { components: ['logo', 'attribution'] },
-  center: [-35.55, 26.53],
-  zoom: 2
+  center: [-77.13, 38.88],
+  zoom: 11.7
 };
 
 export const URLS = {
